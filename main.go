@@ -1,7 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
+
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/widget"
 )
 
 /*
@@ -16,6 +22,31 @@ UI will contain:
 
 Some of these options can be optional.
 */
+
+var width float32 = 420
+var height float32 = 420
+
 func main() {
-	log.Println("Hello World")
+	generateUI()
+}
+
+func generateUI() {
+	a := app.New()
+	w := a.NewWindow("Hello World")
+	w.Resize(fyne.NewSize(width, height))
+	w.SetFixedSize(true)
+
+	content := widget.NewButton("Generate File", func() {
+		generateFile("Test")
+	})
+	w.SetContent(content)
+	w.ShowAndRun()
+}
+func generateFile(fileName string) {
+	file, err := os.Create("%s.")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("File created successfully")
+	defer file.Close()
 }
