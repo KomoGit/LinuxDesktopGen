@@ -43,7 +43,7 @@ func generateUI() {
 	w.ShowAndRun()
 }
 func generateFile(fileName string) {
-	file, err := os.Create("%s.")
+	file, err := os.Create(fileName + ".desktop")
 	if err != nil {
 		log.Fatal(err)
 	}
