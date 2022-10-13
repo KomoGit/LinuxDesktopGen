@@ -87,10 +87,19 @@ func generateFile(fileName string, appLocation string) {
 	writeExec(*file, appLocation)
 }
 
-// Maybe should take in a slice instead of each thing individually.
+// Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
 	_, err2 := file.WriteString(
 		"Exec= " + wineRunner + pathToExec + "\nType=Application") //Move the application types into different function.
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+}
+
+func writeIcon(file os.File, pathToIco string) {
+	_, err2 := file.WriteString(
+		"Icon= " + pathToIco) //Move the application types into different function.
 
 	if err2 != nil {
 		log.Fatal(err2)
