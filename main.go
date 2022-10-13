@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -25,7 +24,7 @@ UI will contain:
 Some of these options can be optional.
 */
 /*TODO :
-# Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors.
+# Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 
 */
 var wineRunner string = "wine " //Standart wine runner.
@@ -51,6 +50,7 @@ func generateUI() { //This method should be ran in main.
 	//Buttons
 	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation) })
 
+	//FATAL : The application crashes when closing out of file Dialog.
 	openFile := widget.NewButton("Open Executables", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, _ error) {
@@ -86,18 +86,22 @@ func generateFile(fileName string, appLocation string) {
 		if err2 != nil {
 			log.Fatal(err2)
 		}
-		fmt.Println("File created successfully")
+		log.Println("File created successfully")
 		writeExec(*file, appLocation)
 	}
 }
 
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
-	_, err2 := file.WriteString(
-		"Exec= " + wineRunner + pathToExec + "\nType=Application") //Move the application types into different function.
+	if pathToExec == "" {
+		log.Panic("Warning, Executable Path Cannot be empty!")
+	} else {
+		_, err2 := file.WriteString(
+			"Exec= " + wineRunner + pathToExec + "\nType=Application") //Move the application types into different function.
 
-	if err2 != nil {
-		log.Fatal(err2)
+		if err2 != nil {
+			log.Fatal(err2)
+		}
 	}
 }
 
