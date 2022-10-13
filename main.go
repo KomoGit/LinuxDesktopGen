@@ -72,19 +72,23 @@ func generateUI() { //This method should be ran in main.
 
 // This should be ran in another thread.
 func generateFile(fileName string, appLocation string) {
-	file, err := os.Create(fileName + ".desktop")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	_, err2 := file.WriteString(
-		"[Desktop Entry]\nName=" + fileName + "\n")
+	if fileName == "" {
+		log.Println("Warning, filename cannot be empty!")
+	} else {
+		file, err := os.Create(fileName + ".desktop")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		_, err2 := file.WriteString(
+			"[Desktop Entry]\nName=" + fileName + "\n")
 
-	if err2 != nil {
-		log.Fatal(err2)
+		if err2 != nil {
+			log.Fatal(err2)
+		}
+		fmt.Println("File created successfully")
+		writeExec(*file, appLocation)
 	}
-	fmt.Println("File created successfully")
-	writeExec(*file, appLocation)
 }
 
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
