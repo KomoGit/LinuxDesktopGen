@@ -1,3 +1,3 @@
 # LinuxDesktopGen
 
-Easily create ```sh .desktop``` files to for your Wine Applications.
+Easily create ```.desktop``` files to for your Wine Applications. Will add ```proton-call``` support to the application and even more.
