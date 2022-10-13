@@ -23,23 +23,37 @@ UI will contain:
 
 Some of these options can be optional.
 */
+/*TODO :
+# Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors.
+
+*/
+//Runners
+var wineRunner string = "wine"
 
 var width float32 = 420
 var height float32 = 420
+
+var a = app.New()
+var w = a.NewWindow("Hello World")
 
 func main() {
 	generateUI()
 }
 
-func generateUI() {
-	a := app.New()
-	w := a.NewWindow("Hello World")
+func generateUI() { //This method should be ran in another thread.
 	w.Resize(fyne.NewSize(width, height))
 	w.SetFixedSize(true)
 
-	input := widget.NewEntry()
-	input.SetPlaceHolder("Application Name")
-	content := container.NewVBox(input, widget.NewButton("Generate File", func() { generateFile(input.Text) }))
+	//Widgets
+	appName := widget.NewEntry()
+	appLocation := widget.NewEntry()
+
+	//Descriptions.
+	appName.SetPlaceHolder("Application Name")
+	appLocation.SetPlaceHolder("Executable Location")
+
+	content := container.NewVBox(appName, appLocation, widget.NewButton("Generate File", func() { generateFile(appName.Text) }))
+
 	w.SetContent(content)
 	w.ShowAndRun()
 }
@@ -48,6 +62,19 @@ func generateFile(fileName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("File created successfully")
+
 	defer file.Close()
+
+	_, err2 := file.WriteString(
+		"[Desktop Entry]\nName=" + fileName + "\n")
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	fmt.Println("File created successfully")
+}
+
+// Maybe should take in a slice instead of each thing individually.
+func writeToFile(f string) {
+
 }
