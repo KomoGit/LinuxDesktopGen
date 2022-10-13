@@ -7,6 +7,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -36,9 +37,9 @@ func generateUI() {
 	w.Resize(fyne.NewSize(width, height))
 	w.SetFixedSize(true)
 
-	content := widget.NewButton("Generate File", func() {
-		generateFile("Test")
-	})
+	input := widget.NewEntry()
+	input.SetPlaceHolder("Application Name")
+	content := container.NewVBox(input, widget.NewButton("Generate File", func() { generateFile(input.Text) }))
 	w.SetContent(content)
 	w.ShowAndRun()
 }
