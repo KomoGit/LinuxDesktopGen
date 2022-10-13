@@ -1,2 +1,3 @@
 # LinuxDesktopGen
-Easily create .desktop files for executables in Linux distros.
+
+Easily create ```sh .desktop``` files to for your Wine Applications.
