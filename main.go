@@ -27,14 +27,13 @@ Some of these options can be optional.
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors.
 
 */
-//Runners
-var wineRunner string = "wine"
+var wineRunner string = "wine " //Standart wine runner.
 
 var width float32 = 420
 var height float32 = 420
 
 var a = app.New()
-var w = a.NewWindow("Hello World")
+var w = a.NewWindow("LinuxDesktopGen - v.0.1")
 
 func main() {
 	generateUI()
@@ -45,19 +44,23 @@ func generateUI() { //This method should be ran in another thread.
 	w.SetFixedSize(true)
 
 	//Widgets
+	//Entries
 	appName := widget.NewEntry()
 	appLocation := widget.NewEntry()
-
+	//Buttons
+	GenerateFileButton := widget.NewButton("Generate File", func() { generateFile(appName.Text, appLocation.Text) })
+	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
 	//Descriptions.
 	appName.SetPlaceHolder("Application Name")
 	appLocation.SetPlaceHolder("Executable Location")
 
-	content := container.NewVBox(appName, appLocation, widget.NewButton("Generate File", func() { generateFile(appName.Text) }))
+	content := container.NewVBox(appName, appLocation, GenerateFileButton, ExitButton)
 
 	w.SetContent(content)
 	w.ShowAndRun()
 }
-func generateFile(fileName string) {
+
+func generateFile(fileName string, appLocation string) {
 	file, err := os.Create(fileName + ".desktop")
 	if err != nil {
 		log.Fatal(err)
@@ -72,9 +75,15 @@ func generateFile(fileName string) {
 		log.Fatal(err2)
 	}
 	fmt.Println("File created successfully")
+	writeExec(*file, appLocation)
 }
 
 // Maybe should take in a slice instead of each thing individually.
-func writeToFile(f string) {
+func writeExec(file os.File, pathToExec string) {
+	_, err2 := file.WriteString(
+		"Exec= " + wineRunner + pathToExec + "\nType=Application")
 
+	if err2 != nil {
+		log.Fatal(err2)
+	}
 }
