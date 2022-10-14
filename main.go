@@ -81,25 +81,25 @@ func generateUI() { //This method should be ran in main.
 func generateFile(fileName string, appLocation string, icoLocation string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
-	} else {
-
-		file, err := os.Create(fileName + ".desktop")
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer file.Close()
-
-		//Prefer this over longer error handles.
-		if _, err2 := file.WriteString(
-			"[Desktop Entry]\nName=" + fileName + "\n"); err2 != nil {
-			log.Fatal(err2)
-		}
-		log.Println("File created successfully")
-		writeExec(*file, appLocation)
-		writeIcon(*file, icoLocation)
+		return
 	}
+
+	file, err := os.Create(fileName + ".desktop")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer file.Close()
+
+	//Prefer this over longer error handles.
+	if _, err2 := file.WriteString(
+		"[Desktop Entry]\nName=" + fileName + "\n"); err2 != nil {
+		log.Fatal(err2)
+	}
+	log.Println("File created successfully")
+	writeExec(*file, appLocation)
+	writeIcon(*file, icoLocation)
 }
 
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
@@ -107,10 +107,10 @@ func writeExec(file os.File, pathToExec string) {
 	writeType(file)
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
-	} else {
-		if _, err := file.WriteString("Exec= " + wineRunner + pathToExec); err != nil {
-			log.Fatal(err)
-		}
+		return
+	}
+	if _, err := file.WriteString("Exec= " + wineRunner + pathToExec); err != nil {
+		log.Fatal(err)
 	}
 }
 
