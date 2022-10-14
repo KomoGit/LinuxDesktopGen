@@ -11,8 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-/*
-Purpose of this tool:
+/*Purpose of this tool:
 Try to create a .Desktop generator that will easily create executables for Linux Applications.
 The application should be controlled with a GUI so you will need to import fyne.
 UI will contain:
@@ -21,11 +20,11 @@ UI will contain:
 # User Input - For name,description,etc.
 # File Selection - For Icon / Exec
 
-Some of these options can be optional.
-*/
-/*TODO :
-# Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
+Some of these options can be optional.*/
 
+/*
+TODO :
+# Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
 var wineRunner string = "wine " //Standart wine runner.
 
@@ -63,7 +62,6 @@ func generateUI() { //This method should be ran in main.
 	openIcoFile := widget.NewButton("Select Icon", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, _ error) {
-				//appLocation = r.URI().String()
 				icoLocation = r.URI().String()
 			}, w)
 		file_Dialog.Show()
@@ -115,8 +113,7 @@ func writeExec(file os.File, pathToExec string) {
 }
 
 func writeIcon(file os.File, pathToIco string) {
-	_, err2 := file.WriteString(
-		"\nIcon=" + pathToIco)
+	_, err2 := file.WriteString("\nIcon=" + pathToIco)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
