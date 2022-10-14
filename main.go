@@ -27,13 +27,14 @@ TODO :
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
 var (
-	wineRunner          = "wine " // Standard wine runner.
-	width       float32 = 420
-	height      float32 = 420
-	appLocation string
-	icoLocation string
-	a           = app.New()
-	w           = a.NewWindow("LinuxDesktopGen - v.0.1")
+	wineRunner           = "wine "          // Standard wine runner.
+	protonRunner         = "proton-call -r" // Proton Caller Runner.
+	width        float32 = 420
+	height       float32 = 420
+	appLocation  string
+	icoLocation  string
+	a            = app.New()
+	w            = a.NewWindow("LinuxDesktopGen - v.0.1")
 )
 
 func main() {
@@ -81,15 +82,18 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
 	} else {
+
 		file, err := os.Create(fileName + ".desktop")
+
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer file.Close()
-		_, err2 := file.WriteString(
-			"[Desktop Entry]\nName=" + fileName + "\n")
 
-		if err2 != nil {
+		defer file.Close()
+
+		//Prefer this over longer error handles.
+		if _, err2 := file.WriteString(
+			"[Desktop Entry]\nName=" + fileName + "\n"); err2 != nil {
 			log.Fatal(err2)
 		}
 		log.Println("File created successfully")
@@ -100,27 +104,24 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
+	writeType(file)
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 	} else {
-		_, err2 := file.WriteString("Exec= " + wineRunner + pathToExec) //Move the application types into different function.
-		writeType(file)
-		if err2 != nil {
-			log.Fatal(err2)
+		if _, err := file.WriteString("Exec= " + wineRunner + pathToExec); err != nil {
+			log.Fatal(err)
 		}
 	}
 }
 
 func writeIcon(file os.File, pathToIco string) {
-	_, err2 := file.WriteString("\nIcon=" + pathToIco)
-	if err2 != nil {
-		log.Fatal(err2)
+	if _, err := file.WriteString("\nIcon=" + pathToIco); err != nil {
+		log.Fatal(err)
 	}
 }
 
 func writeType(file os.File) {
-	_, err2 := file.WriteString("\nType=Application")
-	if err2 != nil {
-		log.Fatal(err2)
+	if _, err := file.WriteString("\nType=Application\n"); err != nil {
+		log.Fatal(err)
 	}
 }
