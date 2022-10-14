@@ -55,7 +55,6 @@ func generateUI() { //This method should be ran in main.
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, _ error) {
 				appLocation = r.URI().String()
-				log.Println(appLocation)
 			}, w)
 		file_Dialog.Show()
 	})
@@ -96,9 +95,8 @@ func writeExec(file os.File, pathToExec string) {
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 	} else {
-		_, err2 := file.WriteString(
-			"Exec= " + wineRunner + pathToExec + "\nType=Application") //Move the application types into different function.
-
+		_, err2 := file.WriteString("Exec= " + wineRunner + pathToExec) //Move the application types into different function.
+		writeType(file)
 		if err2 != nil {
 			log.Fatal(err2)
 		}
@@ -107,8 +105,14 @@ func writeExec(file os.File, pathToExec string) {
 
 func writeIcon(file os.File, pathToIco string) {
 	_, err2 := file.WriteString(
-		"Icon= " + pathToIco) //Move the application types into different function.
+		"Icon= " + pathToIco)
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+}
 
+func writeType(file os.File) {
+	_, err2 := file.WriteString("\nType=Application")
 	if err2 != nil {
 		log.Fatal(err2)
 	}
