@@ -26,16 +26,15 @@ Some of these options can be optional.*/
 TODO :
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
-var wineRunner string = "wine " //Standart wine runner.
-
-var width float32 = 420
-var height float32 = 420
-
-var appLocation string
-var icoLocation string
-
-var a = app.New()
-var w = a.NewWindow("LinuxDesktopGen - v.0.1")
+var (
+	wineRunner          = "wine " // Standard wine runner.
+	width       float32 = 420
+	height      float32 = 420
+	appLocation string
+	icoLocation string
+	a           = app.New()
+	w           = a.NewWindow("LinuxDesktopGen - v.0.1")
+)
 
 func main() {
 	generateUI()
