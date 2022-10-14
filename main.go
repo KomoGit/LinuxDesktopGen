@@ -33,6 +33,7 @@ var width float32 = 420
 var height float32 = 420
 
 var appLocation string
+var icoLocation string
 
 var a = app.New()
 var w = a.NewWindow("LinuxDesktopGen - v.0.1")
@@ -48,13 +49,22 @@ func generateUI() { //This method should be ran in main.
 	//Entries
 	appName := widget.NewEntry()
 	//Buttons
-	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation) })
+	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation) })
 
 	//FATAL : The application crashes when closing out of file Dialog.
-	openFile := widget.NewButton("Open Executables", func() {
+	openFile := widget.NewButton("Select Executable", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, _ error) {
 				appLocation = r.URI().String()
+			}, w)
+		file_Dialog.Show()
+	})
+	/*Ico File doesn't work. Need to add filter so only image files are being shown.*/
+	openIcoFile := widget.NewButton("Select Icon", func() {
+		file_Dialog := dialog.NewFileOpen(
+			func(r fyne.URIReadCloser, _ error) {
+				//appLocation = r.URI().String()
+				icoLocation = r.URI().String()
 			}, w)
 		file_Dialog.Show()
 	})
@@ -63,14 +73,14 @@ func generateUI() { //This method should be ran in main.
 	//Descriptions.
 	appName.SetPlaceHolder("Application Name")
 
-	content := container.NewVBox(appName, openFile, GenerateFileButton, ExitButton)
+	content := container.NewVBox(appName, openFile, openIcoFile, GenerateFileButton, ExitButton)
 
 	w.SetContent(content)
 	w.ShowAndRun()
 }
 
 // This should be ran in another thread.
-func generateFile(fileName string, appLocation string) {
+func generateFile(fileName string, appLocation string, icoLocation string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
 	} else {
@@ -87,6 +97,7 @@ func generateFile(fileName string, appLocation string) {
 		}
 		log.Println("File created successfully")
 		writeExec(*file, appLocation)
+		writeIcon(*file, icoLocation)
 	}
 }
 
@@ -105,7 +116,7 @@ func writeExec(file os.File, pathToExec string) {
 
 func writeIcon(file os.File, pathToIco string) {
 	_, err2 := file.WriteString(
-		"Icon= " + pathToIco)
+		"\nIcon=" + pathToIco)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
