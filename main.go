@@ -111,6 +111,12 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 	writeIcon(*file, icoLocation)
 }
 
+func writeType(file os.File) {
+	if _, err := file.WriteString("\nType=Application"); err != nil {
+		log.Fatal(err)
+	}
+}
+
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
 	writeType(file)
@@ -139,9 +145,3 @@ func writeIcon(file os.File, pathToIco string) {
 // 		log.Fatal(err)
 // 	}
 // }
-
-func writeType(file os.File) {
-	if _, err := file.WriteString("\nType=Application"); err != nil {
-		log.Fatal(err)
-	}
-}
