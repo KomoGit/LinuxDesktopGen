@@ -49,8 +49,10 @@ func generateUI() {
 	//Widgets
 	//Entries
 	appName := widget.NewEntry()
+	appComment := widget.NewEntry()
 	//Buttons
-	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation) })
+	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation, appComment.Text) })
+	//Placeholders
 
 	//FATAL : The application crashes when closing out of file Dialog.
 	openFile := widget.NewButton("Select Executable", func() {
@@ -71,12 +73,12 @@ func generateUI() {
 	})
 
 	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
-	content := container.NewVBox(appName, openFile, openIcoFile, GenerateFileButton, ExitButton)
+	content := container.NewVBox(appName, appComment, openFile, openIcoFile, GenerateFileButton, ExitButton)
 	w.SetContent(content)
 	w.ShowAndRun()
 }
 
-func generateFile(fileName string, appLocation string, icoLocation string) {
+func generateFile(fileName string, appLocation string, icoLocation string, appComment string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
 		return
@@ -91,6 +93,7 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 			"[Desktop Entry]"); err2 != nil {
 			log.Fatal(err2)
 		}
+		writeComment(*file, appComment)
 		writeExec(*file, appLocation)
 		writeIcon(*file, icoLocation)
 	}
@@ -112,6 +115,7 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 	writeType(*file)
 	writeExec(*file, appLocation)
 	writeIcon(*file, icoLocation)
+	writeComment(*file, appComment)
 }
 
 func writeType(file os.File) {
@@ -120,7 +124,6 @@ func writeType(file os.File) {
 	}
 }
 
-// Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
@@ -139,12 +142,8 @@ func writeIcon(file os.File, pathToIco string) {
 	}
 }
 
-//Works without this. Why bother adding this?
-
-// func writePath(file os.File, appLocation string) {
-// 	res := strings.Split(appLocation, "file://")
-// 	fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array) Best to move this into it's own method and use it once.
-// 	if _, err := file.WriteString("\nPath=" + fltrPath); err != nil {
-// 		log.Fatal(err)
-// 	}
-// }
+func writeComment(file os.File, comment string) {
+	if _, err := file.WriteString("\nComment=" + comment); err != nil {
+		log.Fatal(err)
+	}
+}
