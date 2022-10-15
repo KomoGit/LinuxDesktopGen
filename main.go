@@ -49,11 +49,11 @@ func generateUI() {
 	//Widgets
 	//Entries
 	appName := widget.NewEntry()
+	appName.SetPlaceHolder("Insert Name: ")
 	appComment := widget.NewEntry()
+	appComment.SetPlaceHolder("Insert comment: (Optional)")
 	//Buttons
 	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation, appComment.Text) })
-	//Placeholders
-
 	//FATAL : The application crashes when closing out of file Dialog.
 	openFile := widget.NewButton("Select Executable", func() {
 		file_Dialog := dialog.NewFileOpen(
@@ -93,9 +93,6 @@ func generateFile(fileName string, appLocation string, icoLocation string, appCo
 			"[Desktop Entry]"); err2 != nil {
 			log.Fatal(err2)
 		}
-		writeComment(*file, appComment)
-		writeExec(*file, appLocation)
-		writeIcon(*file, icoLocation)
 	}
 
 	file, err := os.Create(fileName + ".desktop")
