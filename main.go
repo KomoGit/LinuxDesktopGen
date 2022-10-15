@@ -70,9 +70,7 @@ func generateUI() { //This method should be ran in main.
 	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
 	//Descriptions.
 	appName.SetPlaceHolder("Application Name")
-
 	content := container.NewVBox(appName, openFile, openIcoFile, GenerateFileButton, ExitButton)
-
 	w.SetContent(content)
 	w.ShowAndRun()
 }
@@ -81,7 +79,25 @@ func generateUI() { //This method should be ran in main.
 func generateFile(fileName string, appLocation string, icoLocation string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
+<<<<<<< HEAD
 		return
+=======
+	} else {
+		file, err := os.Create(fileName + ".desktop")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		//Prefer this over longer error handles.
+		if _, err2 := file.WriteString(
+			"[Desktop Entry]\nName=" + fileName + "\n"); err2 != nil {
+			log.Fatal(err2)
+		}
+		log.Println("File created successfully")
+		writeExec(*file, appLocation)
+		writeIcon(*file, icoLocation)
+>>>>>>> f8ff158 (Small changes.)
 	}
 
 	file, err := os.Create(fileName + ".desktop")
