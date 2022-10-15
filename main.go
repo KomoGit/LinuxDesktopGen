@@ -107,6 +107,7 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 		log.Fatal(err2)
 	}
 	log.Println("File created successfully")
+	writeType(*file)
 	writeExec(*file, appLocation)
 	writeIcon(*file, icoLocation)
 }
@@ -119,7 +120,6 @@ func writeType(file os.File) {
 
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
-	writeType(file)
 	//writePath(file, pathToExec)
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
@@ -138,6 +138,7 @@ func writeIcon(file os.File, pathToIco string) {
 	}
 }
 
+//Works without this. Why bother adding this?
 // func writePath(file os.File, appLocation string) {
 // 	res := strings.Split(appLocation, "file://")
 // 	fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array) Best to move this into it's own method and use it once.
