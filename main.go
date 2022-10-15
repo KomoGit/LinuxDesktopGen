@@ -36,7 +36,7 @@ var (
 	appLocation  string
 	icoLocation  string
 	a            = app.New()
-	w            = a.NewWindow("LinuxDesktopGen - v.0.1")
+	w            = a.NewWindow("LinuxDesktopGen - v.1.0")
 )
 
 func main() {
@@ -60,7 +60,7 @@ func generateUI() {
 			}, w)
 		file_Dialog.Show()
 	})
-	/*Ico File doesn't work. Need to add filter so only image files are being shown.*/
+	/*Ico File doesn't work. Need to add filter so only image files are being shown. (FIXED)*/
 	openIcoFile := widget.NewButton("Select Icon", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, _ error) {
@@ -122,7 +122,6 @@ func writeType(file os.File) {
 
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
-	//writePath(file, pathToExec)
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 		return
@@ -141,6 +140,7 @@ func writeIcon(file os.File, pathToIco string) {
 }
 
 //Works without this. Why bother adding this?
+
 // func writePath(file os.File, appLocation string) {
 // 	res := strings.Split(appLocation, "file://")
 // 	fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array) Best to move this into it's own method and use it once.
