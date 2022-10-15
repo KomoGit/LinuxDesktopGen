@@ -18,7 +18,7 @@ UI will contain:
 # Dropdown - To select runner. Wine,native,etc.
 # Checkbox(es) - To whether run the app as terminal / Notification. ETC
 # User Input - For name,description,etc.
-# File Selection - For Icon / Exec
+# File Selection - For Icon / Exec (Done)
 
 Some of these options can be optional.*/
 
@@ -27,8 +27,8 @@ TODO :
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
 var (
-	wineRunner           = "wine "          // Standard wine runner.
-	protonRunner         = "proton-call -r" // Proton Caller Runner.
+	wineRunner           = "wine "
+	protonRunner         = "proton-call -r"
 	width        float32 = 420
 	height       float32 = 420
 	appLocation  string
@@ -41,7 +41,7 @@ func main() {
 	generateUI()
 }
 
-func generateUI() { //This method should be ran in main.
+func generateUI() {
 	w.Resize(fyne.NewSize(width, height))
 	w.SetFixedSize(true)
 	//Widgets
@@ -68,14 +68,11 @@ func generateUI() { //This method should be ran in main.
 	})
 
 	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
-	//Descriptions.
-	appName.SetPlaceHolder("Application Name")
 	content := container.NewVBox(appName, openFile, openIcoFile, GenerateFileButton, ExitButton)
 	w.SetContent(content)
 	w.ShowAndRun()
 }
 
-// This should be ran in another thread.
 func generateFile(fileName string, appLocation string, icoLocation string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
@@ -87,12 +84,10 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 		}
 		defer file.Close()
 
-		//Prefer this over longer error handles.
 		if _, err2 := file.WriteString(
-			"[Desktop Entry]\nName=" + fileName + "\n"); err2 != nil {
+			"[Desktop Entry]"); err2 != nil {
 			log.Fatal(err2)
 		}
-		log.Println("File created successfully")
 		writeExec(*file, appLocation)
 		writeIcon(*file, icoLocation)
 	}
