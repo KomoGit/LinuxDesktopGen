@@ -9,6 +9,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -65,6 +66,7 @@ func generateUI() {
 			func(r fyne.URIReadCloser, _ error) {
 				icoLocation = r.URI().String()
 			}, w)
+		file_Dialog.SetFilter(storage.NewExtensionFileFilter([]string{".png"})) //Need to make sure more than 1 single extension is allowed.
 		file_Dialog.Show()
 	})
 
