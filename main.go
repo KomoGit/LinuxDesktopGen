@@ -79,9 +79,7 @@ func generateUI() { //This method should be ran in main.
 func generateFile(fileName string, appLocation string, icoLocation string) {
 	if fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
-<<<<<<< HEAD
 		return
-=======
 	} else {
 		file, err := os.Create(fileName + ".desktop")
 		if err != nil {
@@ -97,7 +95,6 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 		log.Println("File created successfully")
 		writeExec(*file, appLocation)
 		writeIcon(*file, icoLocation)
->>>>>>> f8ff158 (Small changes.)
 	}
 
 	file, err := os.Create(fileName + ".desktop")
