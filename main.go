@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -102,7 +103,7 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 
 	//Prefer this over longer error handles.
 	if _, err2 := file.WriteString(
-		"[Desktop Entry]\nName=" + fileName + "\n"); err2 != nil {
+		"[Desktop Entry]\nName=" + fileName); err2 != nil {
 		log.Fatal(err2)
 	}
 	log.Println("File created successfully")
@@ -113,23 +114,34 @@ func generateFile(fileName string, appLocation string, icoLocation string) {
 // Maybe should take in a slice instead of each thing individually. Perhaps I should move all write functions to a single method.
 func writeExec(file os.File, pathToExec string) {
 	writeType(file)
+	//writePath(file, pathToExec)
 	if pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 		return
 	}
-	if _, err := file.WriteString("Exec= " + wineRunner + pathToExec); err != nil {
+	if _, err := file.WriteString("\nExec= " + wineRunner + pathToExec); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func writeIcon(file os.File, pathToIco string) {
-	if _, err := file.WriteString("\nIcon=" + pathToIco); err != nil {
+	res := strings.Split(pathToIco, "file://")
+	fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array)
+	if _, err := file.WriteString("\nIcon=" + fltrPath); err != nil {
 		log.Fatal(err)
 	}
 }
 
+// func writePath(file os.File, appLocation string) {
+// 	res := strings.Split(appLocation, "file://")
+// 	fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array) Best to move this into it's own method and use it once.
+// 	if _, err := file.WriteString("\nPath=" + fltrPath); err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
+
 func writeType(file os.File) {
-	if _, err := file.WriteString("\nType=Application\n"); err != nil {
+	if _, err := file.WriteString("\nType=Application"); err != nil {
 		log.Fatal(err)
 	}
 }
