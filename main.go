@@ -19,7 +19,7 @@ The application should be controlled with a GUI so you will need to import fyne.
 UI will contain:
 # Dropdown - To select runner. Wine,native,etc.
 # Checkbox(es) - To whether run the app as terminal / Notification. ETC
-# User Input - For name,description,etc.
+# User Input - For name,description,etc.(Done)
 # File Selection - For Icon / Exec (Done)
 
 Some of these options can be optional.*/
@@ -29,25 +29,25 @@ TODO :
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
 var (
-	wineRunner           = "wine "
-	protonRunner         = "proton-call -r"
-	width        float32 = 420
-	height       float32 = 420
-	appLocation  string
-	icoLocation  string
-	a            = app.New()
-	w            = a.NewWindow("LinuxDesktopGen - v.1.0")
+	wineRunner = "wine "
+	//protonRunner         = "proton-call -r"
+	width       float32 = 420
+	height      float32 = 420
+	appLocation string
+	icoLocation string
+	a           = app.New()
+	w           = a.NewWindow("LinuxDesktopGen - v.1.0")
 )
 
 func main() {
+	defer panicRecover()
 	generateUI()
 }
 
 func generateUI() {
 	w.Resize(fyne.NewSize(width, height))
 	w.SetFixedSize(true)
-	//Widgets
-	//Entries
+	//Entries and Placeholders.
 	appName := widget.NewEntry()
 	appName.SetPlaceHolder("Insert Name: ")
 	appComment := widget.NewEntry()
@@ -55,17 +55,17 @@ func generateUI() {
 	//Buttons
 	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation, appComment.Text) })
 	//FATAL : The application crashes when closing out of file Dialog.
-	openFile := widget.NewButton("Select Executable", func() {
+	selectExecutable := widget.NewButton("Select Executable", func() {
 		file_Dialog := dialog.NewFileOpen(
-			func(r fyne.URIReadCloser, _ error) {
+			func(r fyne.URIReadCloser, e error) {
 				appLocation = r.URI().String()
 			}, w)
 		file_Dialog.Show()
 	})
-	/*Ico File doesn't work. Need to add filter so only image files are being shown. (FIXED)*/
-	openIcoFile := widget.NewButton("Select Icon", func() {
+
+	selectIco := widget.NewButton("Select Icon (OPTIONAL)", func() {
 		file_Dialog := dialog.NewFileOpen(
-			func(r fyne.URIReadCloser, _ error) {
+			func(r fyne.URIReadCloser, e error) {
 				icoLocation = r.URI().String()
 			}, w)
 		file_Dialog.SetFilter(storage.NewExtensionFileFilter([]string{".png"})) //Need to make sure more than 1 single extension is allowed.
@@ -73,7 +73,7 @@ func generateUI() {
 	})
 
 	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
-	content := container.NewVBox(appName, appComment, openFile, openIcoFile, GenerateFileButton, ExitButton)
+	content := container.NewVBox(appName, appComment, selectExecutable, selectIco, GenerateFileButton, ExitButton)
 	w.SetContent(content)
 	w.ShowAndRun()
 }
@@ -108,11 +108,11 @@ func generateFile(fileName string, appLocation string, icoLocation string, appCo
 		"[Desktop Entry]\nName=" + fileName); err2 != nil {
 		log.Fatal(err2)
 	}
-	log.Println("File created successfully")
 	writeType(*file)
 	writeExec(*file, appLocation)
 	writeIcon(*file, icoLocation)
 	writeComment(*file, appComment)
+	log.Println("File created successfully")
 }
 
 func writeType(file os.File) {
@@ -142,5 +142,13 @@ func writeIcon(file os.File, pathToIco string) {
 func writeComment(file os.File, comment string) {
 	if _, err := file.WriteString("\nComment=" + comment); err != nil {
 		log.Fatal(err)
+	}
+}
+
+// This tries to recover from "SIGSEGV" PANIC! but ultimately fails. If you have a solution to fix this please do a pull-request.
+func panicRecover() {
+	if r := recover(); r != nil {
+		log.Println("Panic! Attempting to recover!")
+		generateUI()
 	}
 }
