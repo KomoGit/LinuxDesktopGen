@@ -136,15 +136,23 @@ func writeExec(file os.File, pathToExec string) {
 }
 
 func writeIcon(file os.File, pathToIco string) {
-	res := strings.Split(pathToIco, "file://")
-	fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array)
-	if _, err := file.WriteString("\nIcon=" + fltrPath); err != nil {
-		log.Fatal(err)
+	if pathToIco == "" {
+		return
+	} else {
+		res := strings.Split(pathToIco, "file://")
+		fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array)
+		if _, err := file.WriteString("\nIcon=" + fltrPath); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
 func writeComment(file os.File, comment string) {
-	if _, err := file.WriteString("\nComment=" + comment); err != nil {
-		log.Fatal(err)
+	if comment == "" {
+		return
+	} else {
+		if _, err := file.WriteString("\nComment=" + comment); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
