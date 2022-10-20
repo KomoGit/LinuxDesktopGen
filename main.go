@@ -58,7 +58,9 @@ func generateUI() {
 	selectExecutable := widget.NewButton("Select Executable", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, e error) {
-				appLocation = r.URI().String()
+				if r != nil {
+					appLocation = r.URI().String()
+				}
 			}, w)
 		file_Dialog.Show()
 	})
@@ -66,7 +68,10 @@ func generateUI() {
 	selectIco := widget.NewButton("Select Icon (OPTIONAL)", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, e error) {
-				icoLocation = r.URI().String()
+				if r != nil {
+					icoLocation = r.URI().String()
+				}
+				//icoLocation = r.URI().String()
 			}, w)
 		file_Dialog.SetFilter(storage.NewExtensionFileFilter([]string{".png"})) //Need to make sure more than 1 single extension is allowed.
 		file_Dialog.Show()
