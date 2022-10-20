@@ -36,7 +36,7 @@ var (
 	appLocation string
 	icoLocation string
 	a           = app.New()
-	w           = a.NewWindow("LinuxDesktopGen - v.1.0")
+	w           = a.NewWindow("LinuxDesktopGen - v.1.1")
 )
 
 func main() {
@@ -53,7 +53,7 @@ func generateUI() {
 	appComment.SetPlaceHolder("Insert comment: (Optional)")
 	//Buttons
 	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation, appComment.Text) })
-	//FATAL : The application crashes when closing out of file Dialog.
+
 	selectExecutable := widget.NewButton("Select Executable", func() {
 		file_Dialog := dialog.NewFileOpen(
 			func(r fyne.URIReadCloser, e error) {
@@ -70,7 +70,6 @@ func generateUI() {
 				if r != nil {
 					icoLocation = r.URI().String()
 				}
-				//icoLocation = r.URI().String()
 			}, w)
 		file_Dialog.SetFilter(storage.NewExtensionFileFilter([]string{".png"})) //Need to make sure more than 1 single extension is allowed.
 		file_Dialog.Show()
@@ -135,6 +134,7 @@ func writeExec(file os.File, pathToExec string) {
 	}
 }
 
+// Optionals - Add them here.
 func writeIcon(file os.File, pathToIco string) {
 	if pathToIco == "" {
 		return
