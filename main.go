@@ -40,7 +40,6 @@ var (
 )
 
 func main() {
-	defer panicRecover()
 	generateUI()
 }
 
@@ -147,13 +146,5 @@ func writeIcon(file os.File, pathToIco string) {
 func writeComment(file os.File, comment string) {
 	if _, err := file.WriteString("\nComment=" + comment); err != nil {
 		log.Fatal(err)
-	}
-}
-
-// This tries to recover from "SIGSEGV" PANIC! but ultimately fails. If you have a solution to fix this please do a pull-request.
-func panicRecover() {
-	if r := recover(); r != nil {
-		log.Println("Panic! Attempting to recover!")
-		generateUI()
 	}
 }
