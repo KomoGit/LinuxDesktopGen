@@ -52,7 +52,7 @@ func generateUI() {
 	appComment := widget.NewEntry()
 	appComment.SetPlaceHolder("Insert comment: (Optional)")
 	//Buttons
-	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(appName.Text, appLocation, icoLocation, appComment.Text) })
+	GenerateFileButton := widget.NewButton("Generate File", func() { go generateFile(&appName.Text, &appLocation, &icoLocation, &appComment.Text) })
 
 	selectExecutable := widget.NewButton("Select Executable", func() {
 		file_Dialog := dialog.NewFileOpen(
@@ -81,12 +81,15 @@ func generateUI() {
 	w.ShowAndRun()
 }
 
-func generateFile(fileName string, appLocation string, icoLocation string, appComment string) {
-	if fileName == "" {
+// func generateFile(fileName string, appLocation string, icoLocation string, appComment string) {
+func generateFile(fileName *string, appLocation *string, icoLocation *string, appComment *string) {
+	if *fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
 		return
 	} else {
-		file, err := os.Create(fileName + ".desktop")
+
+		file, err := os.Create(*fileName + ".desktop")
+
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -98,7 +101,7 @@ func generateFile(fileName string, appLocation string, icoLocation string, appCo
 		}
 	}
 
-	file, err := os.Create(fileName + ".desktop")
+	file, err := os.Create(*fileName + ".desktop")
 
 	if err != nil {
 		log.Fatal(err)
@@ -108,13 +111,14 @@ func generateFile(fileName string, appLocation string, icoLocation string, appCo
 
 	//Prefer this over longer error handles.
 	if _, err2 := file.WriteString(
-		"[Desktop Entry]\nName=" + fileName); err2 != nil {
+		"[Desktop Entry]\nName=" + *fileName); err2 != nil {
 		log.Fatal(err2)
 	}
 	writeType(*file)
 	writeExec(*file, appLocation)
 	writeIcon(*file, icoLocation)
 	writeComment(*file, appComment)
+
 	log.Println("File created successfully")
 }
 
@@ -124,22 +128,22 @@ func writeType(file os.File) {
 	}
 }
 
-func writeExec(file os.File, pathToExec string) {
-	if pathToExec == "" {
+func writeExec(file os.File, pathToExec *string) {
+	if *pathToExec == "" {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 		return
 	}
-	if _, err := file.WriteString("\nExec= " + wineRunner + pathToExec); err != nil {
+	if _, err := file.WriteString("\nExec= " + wineRunner + *pathToExec); err != nil {
 		log.Fatal(err)
 	}
 }
 
 // Optionals - Add them here.
-func writeIcon(file os.File, pathToIco string) {
-	if pathToIco == "" {
+func writeIcon(file os.File, pathToIco *string) {
+	if *pathToIco == "" {
 		return
 	} else {
-		res := strings.Split(pathToIco, "file://")
+		res := strings.Split(*pathToIco, "file://")
 		fltrPath := string(res[len(res)-1]) //Filtered path turned into string (From array)
 		if _, err := file.WriteString("\nIcon=" + fltrPath); err != nil {
 			log.Fatal(err)
@@ -147,11 +151,11 @@ func writeIcon(file os.File, pathToIco string) {
 	}
 }
 
-func writeComment(file os.File, comment string) {
-	if comment == "" {
+func writeComment(file os.File, comment *string) {
+	if *comment == "" {
 		return
 	} else {
-		if _, err := file.WriteString("\nComment=" + comment); err != nil {
+		if _, err := file.WriteString("\nComment=" + *comment); err != nil {
 			log.Fatal(err)
 		}
 	}
