@@ -81,7 +81,6 @@ func generateUI() {
 	w.ShowAndRun()
 }
 
-// func generateFile(fileName string, appLocation string, icoLocation string, appComment string) {
 func generateFile(fileName *string, appLocation *string, icoLocation *string, appComment *string) {
 	if *fileName == "" {
 		log.Println("Warning, filename cannot be empty!")
