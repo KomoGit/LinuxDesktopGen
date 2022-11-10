@@ -17,7 +17,7 @@ import (
 Try to create a .Desktop generator that will easily create executables for Linux Applications.
 The application should be controlled with a GUI so you will need to import fyne.
 UI will contain:
-# Dropdown - To select runner. Wine,native,etc.
+# Dropdown - To select runner. Wine,native,etc.(DONE)
 # Checkbox(es) - To whether run the app as terminal / Notification. ETC
 # User Input - For name,description,etc.(Done)
 # File Selection - For Icon / Exec (Done)
@@ -29,7 +29,7 @@ TODO :
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
 var (
-	currentRunner = wineRunner
+	currentRunner *string
 	wineRunner    = "wine "
 	protonRunner  = "proton-call -r "
 )
@@ -84,10 +84,10 @@ func generateUI() {
 	appRunner := widget.NewSelect([]string{"Wine", "Proton-Call"}, func(value string) {
 		switch value {
 		case "Wine":
-			currentRunner = wineRunner
+			currentRunner = &wineRunner
 			break
 		case "Proton-Call":
-			currentRunner = protonRunner
+			currentRunner = &protonRunner
 			break
 		}
 		log.Println("Select set to", value)
@@ -149,7 +149,7 @@ func writeExec(file os.File, pathToExec *string) {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 		return
 	}
-	if _, err := file.WriteString("\nExec= " + currentRunner + *pathToExec); err != nil {
+	if _, err := file.WriteString("\nExec= " + *currentRunner + *pathToExec); err != nil {
 		log.Fatal(err)
 	}
 }
