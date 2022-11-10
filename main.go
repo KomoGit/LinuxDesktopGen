@@ -80,17 +80,9 @@ func generateUI() {
 	})
 
 	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
-
-	appRunner := widget.NewSelect([]string{"Wine", "Proton-Call"}, func(value string) {
-		switch value {
-		case "Wine":
-			currentRunner = &wineRunner
-			break
-		case "Proton-Call":
-			currentRunner = &protonRunner
-			break
-		}
-		log.Println("Select set to", value)
+	// If the value is left empty the app crashes.
+	appRunner := widget.NewSelect([]string{wineRunner, protonRunner}, func(value string) {
+		currentRunner = &value
 	})
 
 	content := container.NewVBox(appName, appComment, appRunner, selectExecutable, selectIco, GenerateFileButton, ExitButton)
