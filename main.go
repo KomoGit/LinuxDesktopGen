@@ -29,8 +29,12 @@ TODO :
 # Ensure that apart from optionals, nothing else should be empty. If so, program should throw errors. (Done)
 */
 var (
-	wineRunner = "wine "
-	//protonRunner         = "proton-call -r"
+	currentRunner = wineRunner
+	wineRunner    = "wine "
+	protonRunner  = "proton-call -r "
+)
+
+var (
 	width       float32 = 420
 	height      float32 = 420
 	appLocation string
@@ -76,7 +80,20 @@ func generateUI() {
 	})
 
 	ExitButton := widget.NewButton("Exit", func() { os.Exit(0) })
-	content := container.NewVBox(appName, appComment, selectExecutable, selectIco, GenerateFileButton, ExitButton)
+
+	appRunner := widget.NewSelect([]string{"Wine", "Proton-Call"}, func(value string) {
+		switch value {
+		case "Wine":
+			currentRunner = wineRunner
+			break
+		case "Proton-Call":
+			currentRunner = protonRunner
+			break
+		}
+		log.Println("Select set to", value)
+	})
+
+	content := container.NewVBox(appName, appComment, appRunner, selectExecutable, selectIco, GenerateFileButton, ExitButton)
 	w.SetContent(content)
 	w.ShowAndRun()
 }
@@ -132,7 +149,7 @@ func writeExec(file os.File, pathToExec *string) {
 		log.Panic("Warning, Executable Path Cannot be empty!")
 		return
 	}
-	if _, err := file.WriteString("\nExec= " + wineRunner + *pathToExec); err != nil {
+	if _, err := file.WriteString("\nExec= " + currentRunner + *pathToExec); err != nil {
 		log.Fatal(err)
 	}
 }
